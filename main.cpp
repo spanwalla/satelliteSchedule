@@ -8,7 +8,7 @@ int main() {
     std::chrono::duration<double> t(124.32);
     a.writeData(t);
     b.writeData(t);
-    std::cout << a << '\n' << b << '\n' << std::endl;
+    std::cout << a << '\n' << b << std::endl;
     double transferred_a = a.transferData(t);
     double transferred_b = b.transferData(t);
     std::cout << a << '\n' << b << '\n' << transferred_a << ' ' << transferred_b << std::endl;
