@@ -2,24 +2,25 @@
 // Created by wwwod on 18.11.2023.
 //
 
-#ifndef SATELLITESCHEDULE_PARSER_H
-#define SATELLITESCHEDULE_PARSER_H
+#ifndef SATELLITESCHEDULE_FILEWRAPPER_H
+#define SATELLITESCHEDULE_FILEWRAPPER_H
 
 #include <stdexcept>
 #include <string>
 #include <fstream>
+#include <vector>
 
-class Parser {
+class FileWrapper {
 public:
-    explicit Parser(const std::string& filename);
-    ~Parser();
-    std::string parseLine();
+    explicit FileWrapper(const std::string& filename);
+    ~FileWrapper();
+    std::string readLine();
+    bool end();
+
 private:
     std::ifstream file;
-    int parsed;
-
     static std::string trim(const std::string& str); // убрать пробелы, табуляцию и перенос строк по краям строки
 };
 
 
-#endif //SATELLITESCHEDULE_PARSER_H
+#endif //SATELLITESCHEDULE_FILEWRAPPER_H

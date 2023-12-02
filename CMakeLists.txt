@@ -9,6 +9,17 @@ add_executable(satelliteSchedule main.cpp
         src/Satellite.cpp
         src/Satellite.h
         src/SatelliteType.h
-        src/Parser.cpp
-        src/Parser.h
+        src/FileWrapper.cpp
+        src/FileWrapper.h
+        src/Event.cpp
+        src/Event.h
+        src/EventType.h
+        src/Station.cpp
+        src/Station.h
+        src/Schedule.cpp
+        src/Schedule.h
+        src/Converter.cpp
+        src/Converter.h
+        src/Slot.cpp
+        src/Slot.h
 )

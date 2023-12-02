@@ -38,8 +38,8 @@ double Satellite::transferData(std::chrono::duration<double> t) {
     return to_transfer;
 }
 
-std::ostream &operator<<(std::ostream &os, const Satellite &satellite) {
-    os << "Total: " << satellite.disk_space << " Gb, filled: " << satellite.filled_space << " Gb, t_speed: " <<
+std::ostream& operator<<(std::ostream &os, const Satellite &satellite) {
+    os << "Disk: " << satellite.filled_space << '/' << satellite.disk_space << " Gb, t_speed: " <<
        satellite.transfer_speed << " Gb/s, s_speed: " << satellite.shooting_speed << "Gb/s.";
     return os;
 }
