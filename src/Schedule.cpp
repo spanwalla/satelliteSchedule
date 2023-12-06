@@ -1,4 +1,4 @@
-//
+п»ї//
 // Created by wwwod on 30.11.2023.
 //
 
@@ -6,7 +6,7 @@
 
 std::vector<std::string> Schedule::ignore = {
         "readme.txt"
-}; // в config
+}; // РІ config
 
 Schedule::Schedule(const std::string& working_directory) : working_directory(working_directory) {}
 
@@ -28,7 +28,7 @@ void Schedule::createEvents() {
     std::vector<std::string> files;
     parseDirectory(working_directory, files);
 
-    // в config
+    // РІ config
     std::regex name(R"(^(.+)-To-KinoSat_(11\d{4})$)");
     std::regex interval(R"(^\d+\s+(\d{1,2} \w{3} \d{4} \d{2}:\d{2}:\d{2}\.\d+)\s+(\d{1,2} \w{3} \d{4} \d{2}:\d{2}:\d{2}\.\d+)\s+([0-9]+\.[0-9]+)$)");
     for (const auto& filename : files) {
@@ -43,7 +43,7 @@ void Schedule::createEvents() {
             }
             else if (std::regex_match(str, match, interval)) {
                 auto start = Converter::toTimePoint(match[1], "%d %b %Y %H:%M:%S.");
-                auto end = Converter::toTimePoint(match[2], "%d %b %Y %H:%M:%S."); // формат времени в config
+                auto end = Converter::toTimePoint(match[2], "%d %b %Y %H:%M:%S."); // С„РѕСЂРјР°С‚ РІСЂРµРјРµРЅРё РІ config
                 if (current.first == "Russia") {
                     if (!satellites.contains(current.second))
                         satellites.emplace(current.second, Satellite(Converter::toSatelliteType(current.second)));
@@ -86,8 +86,8 @@ void Schedule::transformEventsToSlots() {
     FileWrapper file_for_schedule("Done_schedule.txt", std::ios::app);
     if (events[0].type == EventType::START) {
         actions.push_back(events[0].action);
-    } // выкидывать ошибку, если первое событие конец?
-    for (int i = 1; i < events.size(); ++i) {   // замена events[i] на tmp, но вроде нужен оператор копирования тогда
+    } // РІС‹РєРёРґС‹РІР°С‚СЊ РѕС€РёР±РєСѓ, РµСЃР»Рё РїРµСЂРІРѕРµ СЃРѕР±С‹С‚РёРµ РєРѕРЅРµС†?
+    for (int i = 1; i < events.size(); ++i) {   // Р·Р°РјРµРЅР° events[i] РЅР° tmp, РЅРѕ РІСЂРѕРґРµ РЅСѓР¶РµРЅ РѕРїРµСЂР°С‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ С‚РѕРіРґР°
         if (events[i] != events[i - 1]) {
             Slot slot(events[i - 1].timestamp, events[i].timestamp, &actions);
             slot.makeNotOptimalChoose(*this);
