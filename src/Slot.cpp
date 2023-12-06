@@ -8,11 +8,10 @@
 Slot::Slot(std::chrono::time_point<std::chrono::system_clock> start, std::chrono::time_point<std::chrono::system_clock> end, std::vector<std::pair<std::string, std::string>>* actions) : interval(std::make_pair(start, end)), possible_actions(actions) {
     if (interval.first >= interval.second)
         throw std::invalid_argument("End of slot is earlier than start.");
-    // добавить инициализацию доступных действий
 }
 
 void Slot::makeNotOptimalChoose(Schedule& schedule) {
-    if (possible_actions->size() != 0) {
+    if (!possible_actions->empty()) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<int> dist(0, int((*possible_actions).size()) - 1);
@@ -28,7 +27,7 @@ void Slot::makeNotOptimalChoose(Schedule& schedule) {
 }
 
 void Slot::chooseFirstPossibleAction(Schedule& schedule) {
-    if (possible_actions->size() != 0) {
+    if (!possible_actions->empty()) {
         chosen_actions.push_back((*possible_actions)[0]);
         if ((*possible_actions)[0].second.empty()) {
             schedule.satellites.at((*possible_actions)[0].first).writeData(interval.second - interval.first);
@@ -39,37 +38,19 @@ void Slot::chooseFirstPossibleAction(Schedule& schedule) {
     }
 }
 
-std::ostream& operator<<(std::ostream& os, const Slot& object) {
-
-    os << "[" << object.interval.first << ", " << object.interval.second << "] Action: ";
-    /*if (object.selected_action == -1)
-        os << "not chosen.";
-    else {
-        os << "Satellite-KinoSat_" << object.possible_actions.at(object.selected_action).first;
-        if (object.possible_actions.at(object.selected_action).second.empty())
-            os << " shooting.";
-        else
-            os << " transfers to " << object.possible_actions.at(object.selected_action).second << '.';
-    }*/
-    for (int i = 0; i < (*object.possible_actions).size(); ++i) {
-        os << "Satellite-KinoSat_" << (*object.possible_actions)[i].first;
-        if ((*object.possible_actions)[i].second.empty())
-            os << " shooting. ";
-        else
-            os << " transfers to " << (*object.possible_actions)[i].second << ". ";
-    }
-    return os;
+std::ostream& operator<<(std::ostream& os, Slot& object) {
+    return os << object.toString();
 }
 
-std::string Slot::slotToString() {
+std::string Slot::toString() {
     std::ostringstream oss;
-    oss << "\n[" << interval.first << ", " << interval.second << "] Action: ";
-    for (int i = 0; i < chosen_actions.size(); ++i) {
-        oss << "Satellite-KinoSat_" << chosen_actions[i].first;
-        if (chosen_actions[i].second.empty())
-            oss << " shooting. ";
+    oss << "[" << interval.first << ", " << interval.second << "] Action: ";
+    for (auto & chosen_action : chosen_actions) {
+        oss << "Satellite-KinoSat_" << chosen_action.first;
+        if (chosen_action.second.empty())
+            oss << " shooting.";
         else
-            oss << " transfers to " << chosen_actions[i].second << ". ";
+            oss << " transfers to " << chosen_action.second << ".";
     }
     return oss.str();
 }

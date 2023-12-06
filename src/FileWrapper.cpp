@@ -15,7 +15,7 @@ FileWrapper::~FileWrapper() {
 }
 
 void FileWrapper::write(const std::string& string){
-    file << string;
+    file << string << '\n';
 }
 
 std::string FileWrapper::readLine() {

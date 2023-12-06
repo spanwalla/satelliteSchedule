@@ -8,7 +8,7 @@ std::vector<std::string> Schedule::ignore = {
         "readme.txt"
 }; // в config
 
-Schedule::Schedule(const std::string& working_directory) : working_directory(working_directory) {}
+Schedule::Schedule(const std::string& working_directory, const std::string& result) : working_directory(working_directory), file_for_schedule(result, std::ios_base::out) {}
 
 
 
@@ -67,14 +67,6 @@ void Schedule::createEvents() {
     std::cout << events.size() << std::endl;
 }
 
-Satellite& Schedule::getSatellite(const std::string& id) {
-    return satellites.at(id);
-}
-
-Station& Schedule::getStation(const std::string& name) {
-    return stations.at(name);
-}
-
 void Schedule::resetSchedule() {
     stations.clear();
     satellites.clear();
@@ -83,7 +75,7 @@ void Schedule::resetSchedule() {
 
 void Schedule::transformEventsToSlots() {
     std::vector<std::pair<std::string, std::string>> actions;
-    FileWrapper file_for_schedule("Done_schedule.txt", std::ios::app);
+    std::cout << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots started." << std::endl;
     if (events[0].type == EventType::START) {
         actions.push_back(events[0].action);
     } // выкидывать ошибку, если первое событие конец?
@@ -91,7 +83,7 @@ void Schedule::transformEventsToSlots() {
         if (events[i] != events[i - 1]) {
             Slot slot(events[i - 1].timestamp, events[i].timestamp, &actions);
             slot.makeNotOptimalChoose(*this);
-            file_for_schedule.write(slot.slotToString());
+            file_for_schedule.write(slot.toString());
         }
         if (events[i].type == EventType::START) {
             actions.push_back(events[i].action);
@@ -99,9 +91,12 @@ void Schedule::transformEventsToSlots() {
         if (events[i].type == EventType::END) {
             std::erase(actions, events[i].action);
         }
+        if (i % 100000 == 0)
+            std::cout << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots transformed " << i << " events.\n";
     }
+    std::cout << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots ended." << std::endl;
 }
 
-double Schedule::getAllData() {
+double Schedule::getAllData() const {
     return all_received_data;
 }

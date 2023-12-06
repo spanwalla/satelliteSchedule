@@ -21,7 +21,7 @@ public:
 
 private:
     std::fstream file;
-    static std::string trim(const std::string& str); // убрать пробелы, табуляцию и перенос строк по краям строки
+    static std::string trim(const std::string& str); // СѓР±СЂР°С‚СЊ С‚Р°Р±СѓР»СЏС†РёСЋ, РѕР±СЂРµР·Р°С‚СЊ РїСЂРѕР±РµР»С‹ СЃРїСЂР°РІР° Рё СЃР»РµРІР°
 };
 
 
