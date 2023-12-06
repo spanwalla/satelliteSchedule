@@ -1,7 +1,7 @@
 //
 // Created by wwwod on 01.12.2023.
 //
-
+#pragma warning(disable : 4996)
 #include "Converter.h"
 
 SatelliteType Converter::toSatelliteType(const std::string& satellite) {
@@ -19,7 +19,7 @@ std::chrono::time_point<std::chrono::system_clock> Converter::toTimePoint(const 
     std::string ms;
     ss >> std::get_time(&tm, fmt.c_str()) >> ms;
     auto timePoint =
-            std::chrono::system_clock::from_time_t(std::mktime(&tm)) +
-            std::chrono::milliseconds(std::stoi(ms));
-    return timePoint + std::chrono::seconds(-timezone);
+        std::chrono::system_clock::from_time_t(std::mktime(&tm)) +
+        std::chrono::milliseconds(std::stoi(ms));
+    return timePoint + std::chrono::seconds(-_timezone);
 }

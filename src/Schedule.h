@@ -19,22 +19,23 @@
 #include "Converter.h"
 
 class Schedule {
+    friend class Slot;
 public:
-    explicit Schedule(const std::string& working_directory);
-    [[nodiscard]] Satellite& getSatellite(const std::string& id);
-    [[nodiscard]] Station& getStation(const std::string& name);
+    explicit Schedule(const std::string& working_directory, const std::string& result);
     void buildSchedule();
     void resetSchedule();
+    [[nodiscard]] double getAllData() const;
 
 private:
+    double all_received_data = 0;
     std::map<std::string, Satellite> satellites;
     std::map<std::string, Station> stations;
     std::vector<Event> events;
-    std::vector<Slot> slots;
     const std::string& working_directory;
+    FileWrapper file_for_schedule;
     static std::vector<std::string> ignore;
 
-    static void parseDirectory(const std::string &path, std::vector<std::string>& file_paths);
+    static void parseDirectory(const std::string& path, std::vector<std::string>& file_paths);
     void createEvents();
     void transformEventsToSlots();
 };

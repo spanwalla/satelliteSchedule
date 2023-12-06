@@ -9,17 +9,19 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include "Slot.h"
 
 class FileWrapper {
 public:
-    explicit FileWrapper(const std::string& filename);
+    explicit FileWrapper(const std::string& filename, std::ios_base::openmode mode = std::ios_base::in);
     ~FileWrapper();
     std::string readLine();
+    void write(const std::string& string);
     bool end();
 
 private:
-    std::ifstream file;
-    static std::string trim(const std::string& str); // убрать пробелы, табуляцию и перенос строк по краям строки
+    std::fstream file;
+    static std::string trim(const std::string& str); // убрать табуляцию, обрезать пробелы справа и слева
 };
 
 

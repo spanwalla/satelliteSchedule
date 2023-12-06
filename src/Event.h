@@ -15,6 +15,7 @@ class Event {
 public:
     Event(EventType type, std::chrono::time_point<std::chrono::system_clock> timestamp, const std::string& satellite, const std::string& station = "");
     bool operator< (const Event& other) const;
+    bool operator != (const Event& other) const;
     // friend bool operator== (const Event& first, const Event& second);
     // friend bool operator!= (const Event& first, const Event& second);
 
