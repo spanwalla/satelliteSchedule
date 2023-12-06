@@ -4,7 +4,7 @@
 
 #include "FileWrapper.h"
 
-FileWrapper::FileWrapper(const std::string& filename): file(filename) {
+FileWrapper::FileWrapper(const std::string& filename, std::ios_base::openmode mode) : file(filename, mode) {
     using namespace std::string_literals;
     if (!file.is_open())
         throw std::runtime_error("Unable to open "s + filename);
@@ -12,6 +12,10 @@ FileWrapper::FileWrapper(const std::string& filename): file(filename) {
 
 FileWrapper::~FileWrapper() {
     file.close();
+}
+
+void FileWrapper::write(const std::string& string){
+    file << string;
 }
 
 std::string FileWrapper::readLine() {

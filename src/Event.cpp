@@ -5,12 +5,16 @@
 #include "Event.h"
 
 Event::Event(EventType type, std::chrono::time_point<std::chrono::system_clock> timestamp, const std::string& satellite,
-             const std::string& station): type(type), timestamp(timestamp), action(std::make_pair(satellite, station)) {
+    const std::string& station) : type(type), timestamp(timestamp), action(std::make_pair(satellite, station)) {
 
 }
 
-bool Event::operator< (const Event &other) const {
+bool Event::operator< (const Event& other) const {
     return timestamp < other.timestamp;
+}
+
+bool Event::operator != (const Event& other) const {
+    return timestamp != other.timestamp;
 }
 
 /* bool operator==(const Event& first, const Event& second) {

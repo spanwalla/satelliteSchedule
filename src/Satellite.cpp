@@ -4,17 +4,17 @@
 
 #include "Satellite.h"
 
-Satellite::Satellite(SatelliteType type): shooting_speed(SHOOTING_SPEED), filled_space(0) {
+Satellite::Satellite(SatelliteType type) : shooting_speed(SHOOTING_SPEED), filled_space(0) {
     switch (type) {
-        case SatelliteType::KINO:
-            disk_space = KINO_SPACE;
-            transfer_speed = KINO_TRANSFER_SPEED;
-            break;
+    case SatelliteType::KINO:
+        disk_space = KINO_SPACE;
+        transfer_speed = KINO_TRANSFER_SPEED;
+        break;
 
-        case SatelliteType::ZORKIY:
-            disk_space = ZORKIY_SPACE;
-            transfer_speed = ZORKIY_TRANSFER_SPEED;
-            break;
+    case SatelliteType::ZORKIY:
+        disk_space = ZORKIY_SPACE;
+        transfer_speed = ZORKIY_TRANSFER_SPEED;
+        break;
     }
 }
 
@@ -33,13 +33,14 @@ double Satellite::transferData(std::chrono::duration<double> t) {
     if (filled_space - to_transfer < 0) {
         to_transfer = filled_space;
         filled_space = 0;
-    } else
+    }
+    else
         filled_space -= to_transfer;
     return to_transfer;
 }
 
-std::ostream& operator<<(std::ostream &os, const Satellite &satellite) {
+std::ostream& operator<<(std::ostream& os, const Satellite& satellite) {
     os << "Disk: " << satellite.filled_space << '/' << satellite.disk_space << " Gb, t_speed: " <<
-       satellite.transfer_speed << " Gb/s, s_speed: " << satellite.shooting_speed << "Gb/s.";
+        satellite.transfer_speed << " Gb/s, s_speed: " << satellite.shooting_speed << "Gb/s.";
     return os;
 }

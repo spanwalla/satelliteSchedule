@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/Schedule.h"
+#include "Schedule.h"
 
 int main() {
     // FileWrapper ana("DATA_Files/Facility2Constellation/Facility-Anadyr1.txt");
@@ -8,5 +8,6 @@ int main() {
 
     Schedule schedule("DATA_Files");
     schedule.buildSchedule();
+    std::cout << schedule.getAllData() << std::endl;
     return 0;
 }

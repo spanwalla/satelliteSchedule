@@ -9,21 +9,23 @@
 #include <stdexcept>
 #include <iostream>
 #include <random>
-// #include "Schedule.h"
+#include <sstream>
 #include "Event.h"
 
 class Schedule;
 
 class Slot {
 public:
-    Slot(Schedule* schedule, std::chrono::time_point<std::chrono::system_clock> start, std::chrono::time_point<std::chrono::system_clock> end);
-    void makeNotOptimalChoose();
+    Slot(std::chrono::time_point<std::chrono::system_clock> start, std::chrono::time_point<std::chrono::system_clock> end, std::vector<std::pair<std::string, std::string>>* actions);
+    void makeNotOptimalChoose(Schedule& schedule);
+    void chooseFirstPossibleAction(Schedule& schedule);
     friend std::ostream& operator<<(std::ostream& os, const Slot& object);
-private:
-    Schedule* schedule;
     std::pair<std::chrono::time_point<std::chrono::system_clock>, std::chrono::time_point<std::chrono::system_clock>> interval;
-    std::vector<std::pair<std::string, std::string>> possible_actions;
-    int selected_action {-1};
+    std::vector<std::pair<std::string, std::string>> chosen_actions;
+    std::string slotToString();
+private:
+    std::vector<std::pair<std::string, std::string>>* possible_actions;
+    int selected_action{ -1 };
 };
 
 
