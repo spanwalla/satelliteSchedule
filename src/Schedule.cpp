@@ -52,8 +52,8 @@ void Schedule::createEvents() {
                     events.emplace_back(EventType::END, end, current.second);
                 }
                 else {
-                    if (!stations.contains(current.first))
-                        stations.emplace(current.first, Station());
+                    //if (!stations.contains(current.first))
+                        //stations.emplace(current.first, Station());
                     if (!satellites.contains(current.second))
                         satellites.emplace(current.second, Satellite(Converter::toSatelliteType(current.second)));
 
@@ -68,7 +68,7 @@ void Schedule::createEvents() {
 }
 
 void Schedule::resetSchedule() {
-    stations.clear();
+    //stations.clear();
     satellites.clear();
     events.clear();
 }

@@ -13,7 +13,7 @@
 #include <algorithm>
 #include "Event.h"
 #include "Satellite.h"
-#include "Station.h"
+//#include "Station.h"
 #include "Slot.h"
 #include "FileWrapper.h"
 #include "Converter.h"
@@ -29,7 +29,7 @@ public:
 private:
     double all_received_data = 0;
     std::map<std::string, Satellite> satellites;
-    std::map<std::string, Station> stations;
+    //std::map<std::string, Station> stations;
     std::vector<Event> events;
     const std::string& working_directory;
     FileWrapper file_for_schedule;
