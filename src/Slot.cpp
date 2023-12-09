@@ -38,10 +38,6 @@ void Slot::chooseFirstPossibleAction(Schedule& schedule) {
     }
 }
 
-std::ostream& operator<<(std::ostream& os, Slot& object) {
-    return os << object.toString();
-}
-
 std::string Slot::toString() {
     std::ostringstream oss;
     oss << "[" << interval.first << ", " << interval.second << "] Action: ";

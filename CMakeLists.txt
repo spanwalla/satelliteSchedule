@@ -22,4 +22,14 @@ add_executable(satelliteSchedule main.cpp
         src/Converter.h
         src/Slot.cpp
         src/Slot.h
+        src/Observable.h
+        src/Observer.h
+        src/Log/MessageType.h
+        src/Log/LogObserver.cpp
+        src/Log/LogObserver.h
+        src/Log/Logger.h
+        src/Log/ConsoleLogger.cpp
+        src/Log/ConsoleLogger.h
+        src/Log/FileLogger.cpp
+        src/Log/FileLogger.h
 )
