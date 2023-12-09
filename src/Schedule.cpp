@@ -120,6 +120,7 @@ void Schedule::transformEventsToSlots() {
     ss.clear();
     ss << "Total: " << getAllData() << " Gb.";
     notifyObservers(MessageType::SCHEDULE, ss.str());
+    notifyObservers(MessageType::INFO, ss.str());
 }
 
 double Schedule::getAllData() const {
