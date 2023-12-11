@@ -18,11 +18,10 @@ class Schedule;
 class Slot {
 public:
     Slot(std::chrono::time_point<std::chrono::system_clock> start, std::chrono::time_point<std::chrono::system_clock> end, Actions* actions, Schedule* schedule);
-    //void makeNotOptimalChoose();
-    //void chooseFirstPossibleAction();
     void makeOptimalChoice();
     std::string toString();
     friend std::ostream& operator <<(std::ostream& os, Slot& object);
+
 private:
     Actions* possible_actions;
     Schedule* schedule;

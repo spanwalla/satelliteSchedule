@@ -102,7 +102,7 @@ void Schedule::transformEventsToSlots() {
         }
         else {
             stations.at(events[0].action.second).visible_satellites.push_back(events[0].action.first);
-            actions.transfering.push_back(events[0].action.second);
+            actions.transferring.push_back(events[0].action.second);
         }
     } // выкидывать ошибку, если первое событие конец?
     for (int i = 1; i < events.size(); ++i) {   // замена events[i] на tmp, но вроде нужен оператор копирования тогда
@@ -117,8 +117,8 @@ void Schedule::transformEventsToSlots() {
             }
             else {
                 stations.at(events[i].action.second).visible_satellites.push_back(events[i].action.first);
-                if (std::find(actions.transfering.begin(), actions.transfering.end(), events[i].action.second) == actions.transfering.end()) {
-                    actions.transfering.push_back(events[i].action.second);
+                if (std::find(actions.transferring.begin(), actions.transferring.end(), events[i].action.second) == actions.transferring.end()) {
+                    actions.transferring.push_back(events[i].action.second);
                 }
             }
         }
@@ -129,7 +129,7 @@ void Schedule::transformEventsToSlots() {
             else {
                 std::erase(stations.at(events[i].action.second).visible_satellites, events[i].action.first);
                 if (stations.at(events[i].action.second).visible_satellites.empty()) {
-                    std::erase(actions.transfering, events[i].action.second);
+                    std::erase(actions.transferring, events[i].action.second);
                 }
             }
         }
