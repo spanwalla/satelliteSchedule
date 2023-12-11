@@ -25,9 +25,9 @@ public:
     explicit Satellite(SatelliteType type);
     void writeData(std::chrono::duration<double> t);
     [[nodiscard]] double getFreeSpace() const;
+    [[nodiscard]] double getFilledSpace() const;
     double transferData(std::chrono::duration<double> t);
     friend std::ostream& operator << (std::ostream& os, const Satellite& satellite);
-
 private:
     double disk_space; // в Гб
     double shooting_speed;

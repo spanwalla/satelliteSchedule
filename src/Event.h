@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include "EventType.h"
 #include "Satellite.h"
+#include "Station.h"
 
 class Event {
 public:

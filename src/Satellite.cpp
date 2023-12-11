@@ -28,6 +28,10 @@ double Satellite::getFreeSpace() const {
     return disk_space - filled_space;
 }
 
+double Satellite::getFilledSpace() const {
+    return filled_space;
+}
+
 double Satellite::transferData(std::chrono::duration<double> t) {
     double to_transfer = t.count() * transfer_speed;
     if (filled_space - to_transfer < 0) {

@@ -8,9 +8,16 @@ std::vector<std::string> Schedule::ignore = {
         "readme.txt"
 }; // в config
 
-Schedule::Schedule(const std::string& working_directory, const std::string& result) : working_directory(working_directory), file_for_schedule(result, std::ios_base::out) {}
+Schedule::Schedule(const std::string& working_directory) : working_directory(working_directory) {}
 
+void Schedule::addObserver(Observer *observer) {
+    observers.push_back(observer);
+}
 
+void Schedule::notifyObservers(MessageType type, std::string message) {
+    for (Observer* observer: observers)
+        observer->update(type, message);
+}
 
 void Schedule::parseDirectory(const std::string& path, std::vector<std::string>& file_paths) {
     for (auto const& entry : std::filesystem::recursive_directory_iterator(path)) {
@@ -20,8 +27,15 @@ void Schedule::parseDirectory(const std::string& path, std::vector<std::string>&
 }
 
 void Schedule::buildSchedule() {
+    std::stringstream ss;
+    ss << "[" << std::chrono::system_clock::now() << "] START BUILDING SCHEDULE.";
+    notifyObservers(MessageType::INFO, ss.str());
     createEvents();
     transformEventsToSlots();
+    ss.str(std::string());
+    ss.clear();
+    ss << "[" << std::chrono::system_clock::now() << "] END BUILDING SCHEDULE.";
+    notifyObservers(MessageType::INFO, ss.str());
 }
 
 void Schedule::createEvents() {
@@ -34,7 +48,9 @@ void Schedule::createEvents() {
     for (const auto& filename : files) {
         FileWrapper file(filename);
         std::pair<std::string, std::string> current;
-        std::cout << filename << std::endl;
+        std::stringstream ss;
+        ss << "[" << std::chrono::system_clock::now() << "] READING: " << filename;
+        notifyObservers(MessageType::INFO, ss.str());
         while (!file.end()) {
             std::string str = file.readLine();
             std::smatch match;
@@ -52,8 +68,8 @@ void Schedule::createEvents() {
                     events.emplace_back(EventType::END, end, current.second);
                 }
                 else {
-                    //if (!stations.contains(current.first))
-                        //stations.emplace(current.first, Station());
+                    if (!stations.contains(current.first))
+                        stations.emplace(current.first, Station());
                     if (!satellites.contains(current.second))
                         satellites.emplace(current.second, Satellite(Converter::toSatelliteType(current.second)));
 
@@ -64,37 +80,69 @@ void Schedule::createEvents() {
         }
     }
     std::sort(events.begin(), events.end());
-    std::cout << events.size() << std::endl;
+    std::stringstream ss;
+    ss << "[" << std::chrono::system_clock::now() << "] Total events: " << events.size();
+    notifyObservers(MessageType::INFO, ss.str());
 }
 
 void Schedule::resetSchedule() {
-    //stations.clear();
+    stations.clear();
     satellites.clear();
     events.clear();
 }
 
 void Schedule::transformEventsToSlots() {
-    std::vector<std::pair<std::string, std::string>> actions;
-    std::cout << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots started." << std::endl;
+    std::stringstream ss;
+    ss << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots started.";
+    notifyObservers(MessageType::INFO, ss.str());
+    Actions actions;
     if (events[0].type == EventType::START) {
-        actions.push_back(events[0].action);
+        if (events[0].action.second.empty()) {
+            actions.shooting.push_back(events[0].action.first);
+        }
+        else {
+            stations.at(events[0].action.second).visible_satellites.push_back(events[0].action.first);
+            actions.transfering.push_back(events[0].action.second);
+        }
     } // выкидывать ошибку, если первое событие конец?
     for (int i = 1; i < events.size(); ++i) {   // замена events[i] на tmp, но вроде нужен оператор копирования тогда
         if (events[i] != events[i - 1]) {
-            Slot slot(events[i - 1].timestamp, events[i].timestamp, &actions);
-            slot.makeNotOptimalChoose(*this);
-            file_for_schedule.write(slot.toString());
+            Slot slot(events[i - 1].timestamp, events[i].timestamp, &actions, this);
+            slot.makeOptimalChoice();
+            notifyObservers(MessageType::SCHEDULE, slot.toString());
         }
         if (events[i].type == EventType::START) {
-            actions.push_back(events[i].action);
+            if (events[i].action.second.empty()) {
+                actions.shooting.push_back(events[i].action.first);
+            }
+            else {
+                stations.at(events[i].action.second).visible_satellites.push_back(events[i].action.first);
+                if (std::find(actions.transfering.begin(), actions.transfering.end(), events[i].action.second) == actions.transfering.end()) {
+                    actions.transfering.push_back(events[i].action.second);
+                }
+            }
         }
         if (events[i].type == EventType::END) {
-            std::erase(actions, events[i].action);
+            if (events[i].action.second.empty()) {
+                std::erase(actions.shooting, events[i].action.first);
+            }
+            else {
+                std::erase(stations.at(events[i].action.second).visible_satellites, events[i].action.first);
+                if (stations.at(events[i].action.second).visible_satellites.empty()) {
+                    std::erase(actions.transfering, events[i].action.second);
+                }
+            }
         }
-        if (i % 100000 == 0)
-            std::cout << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots transformed " << i << " events.\n";
     }
-    std::cout << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots ended." << std::endl;
+    ss.str(std::string());
+    ss.clear();
+    ss << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots ended.";
+    notifyObservers(MessageType::INFO, ss.str());
+    ss.str(std::string());
+    ss.clear();
+    ss << "Total: " << getAllData() << " Gb.";
+    notifyObservers(MessageType::SCHEDULE, ss.str());
+    notifyObservers(MessageType::INFO, ss.str());
 }
 
 double Schedule::getAllData() const {
