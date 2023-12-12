@@ -26,12 +26,12 @@ void Slot::choose_most_filled(Station* station) {
     }
     auto ind = std::find(possible_actions->shooting.begin(), possible_actions->shooting.end(), station->chosen_satellite);
     if (ind != possible_actions->shooting.end()) {
-        not_selected_shootings.push_back(ind - possible_actions->shooting.begin());
+        not_selected_shootings.push_back(int(std::distance(possible_actions->shooting.begin(), ind)));
     }
 }
 
 void Slot::makeOptimalChoice() {
-    for (auto& transferring_action : (*possible_actions).transferring) {
+    for (auto& transferring_action : possible_actions->transferring) {
         choose_most_filled(&(schedule->stations.at(transferring_action)));
     }
     for (int i = 0; i < possible_actions->shooting.size(); ++i) {
@@ -41,22 +41,18 @@ void Slot::makeOptimalChoice() {
     }
 }
 
-std::ostream& operator<<(std::ostream& os, Slot& object) {
-    return os << object.toString();
-}
-
 std::string Slot::toString() {
     std::ostringstream oss;
-    oss << "[" << interval.first << ", " << interval.second << "] Action: ";
+    oss << "[" << interval.first << ", " << interval.second << "]\nShooting:\n";
     for (int i = 0; i < possible_actions->shooting.size(); ++i) {
         if (std::find(not_selected_shootings.begin(), not_selected_shootings.end(), i) == not_selected_shootings.end()) {
-            oss << "Satellite-KinoSat_" << possible_actions->shooting[i] << " shooting; ";
+            oss << "Satellite-KinoSat_" << possible_actions->shooting[i] << "\n";
         }
     }
-    oss << "\n";
-    for (auto& transferring_action : (*possible_actions).transferring) {
+    oss << "\nTransferring:\n";
+    for (auto& transferring_action : possible_actions->transferring) {
         if (!schedule->stations.at(transferring_action).chosen_satellite.empty()) {
-            oss << transferring_action << " get info from: " << schedule->stations.at(transferring_action).chosen_satellite;
+            oss << transferring_action << ":Satellite-KinoSat_" << schedule->stations.at(transferring_action).chosen_satellite << "\n";
         }
     }
     return oss.str();

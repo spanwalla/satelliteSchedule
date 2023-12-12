@@ -15,8 +15,9 @@
 class LogObserver: public Observer {
 public:
     explicit LogObserver(Schedule* schedule);
-    void update(MessageType type, std::string message) override;
+    void update(MessageType type, const std::string& message) override;
     void addLogger(MessageType type, Logger* new_logger);
+
 private:
     std::unordered_map<MessageType, std::vector<Logger*>> loggers;
 };

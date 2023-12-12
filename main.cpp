@@ -5,9 +5,8 @@
 int main() {
     Schedule schedule("DATA_Files");
     LogObserver log_observer(&schedule);
-    ConsoleLogger console_logger(&log_observer, {MessageType::INFO});
-    FileLogger file_logger(&log_observer, "result.txt", {MessageType::SCHEDULE});
-    FileLogger debug_info(&log_observer, "log.txt", {MessageType::INFO});
+    ConsoleLogger console_logger(&log_observer, { MessageType::INFO });
+    FileLogger shooting_logger(&log_observer, "result.txt", { MessageType::SCHEDULE });
     schedule.buildSchedule();
     return 0;
 }

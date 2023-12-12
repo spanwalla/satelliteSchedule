@@ -9,9 +9,10 @@ LogObserver::LogObserver(Schedule *schedule) {
         schedule->addObserver(this);
 }
 
-void LogObserver::update(MessageType type, std::string message) {
-    for (const auto& logger: loggers.at(type))
-        logger->write(message);
+void LogObserver::update(MessageType type, const std::string& message) {
+    if (loggers.contains(type))
+        for (const auto& logger: loggers.at(type))
+            logger->write(message);
 }
 
 void LogObserver::addLogger(MessageType type, Logger *new_logger) {
