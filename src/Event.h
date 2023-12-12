@@ -13,7 +13,7 @@
 
 class Event {
 public:
-    Event(EventType type, std::chrono::time_point<std::chrono::system_clock> timestamp, const std::string& satellite, const std::string& station = "");
+    Event(EventType type, std::chrono::time_point<std::chrono::system_clock> timestamp, int satellite, int station = -1);
     bool operator< (const Event& other) const;
     bool operator != (const Event& other) const;
     // friend bool operator== (const Event& first, const Event& second);
@@ -21,7 +21,7 @@ public:
 
     EventType type;
     std::chrono::time_point<std::chrono::system_clock> timestamp;
-    std::pair<std::string, std::string> action;
+    std::pair<int, int> action;
 };
 
 #endif //SATELLITESCHEDULE_EVENT_H

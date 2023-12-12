@@ -11,9 +11,9 @@
 class Station {
 public:
     friend std::ostream& operator << (std::ostream& os, const Station& station);
-    std::vector<std::string> visible_satellites;
+    std::vector<int> visible_satellites;
     std::vector<int> possible_satellites;
-    std::string chosen_satellite;
+    int chosen_satellite {-1};
 };
 
 

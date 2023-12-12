@@ -4,8 +4,8 @@
 #include <string>
 
 struct Actions {
-	std::vector<std::string> shooting;
-	std::vector<std::string> transferring;
+	std::vector<int> shooting;
+	std::vector<int> transferring;
 };
 
 #endif

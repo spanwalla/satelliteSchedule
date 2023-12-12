@@ -4,8 +4,7 @@
 
 #include "Event.h"
 
-Event::Event(EventType type, std::chrono::time_point<std::chrono::system_clock> timestamp, const std::string& satellite,
-    const std::string& station) : type(type), timestamp(timestamp), action(std::make_pair(satellite, station)) {
+Event::Event(EventType type, std::chrono::time_point<std::chrono::system_clock> timestamp, int satellite, int station) : type(type), timestamp(timestamp), action(std::make_pair(satellite, station)) {
 
 }
 
