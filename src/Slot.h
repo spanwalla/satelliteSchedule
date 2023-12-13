@@ -27,6 +27,7 @@ private:
     Schedule* schedule;
     std::pair<std::chrono::time_point<std::chrono::system_clock>, std::chrono::time_point<std::chrono::system_clock>> interval;
     std::vector<int> not_selected_shootings;
+    std::vector<int> transferring_satellites;
     void choose_most_filled(Station* station);
     void choose_satellite(Station* station);
 };

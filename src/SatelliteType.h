@@ -10,6 +10,7 @@
 #define SHOOTING_SPEED          0.5
 #define KINO_TRANSFER_SPEED     0.125
 #define ZORKIY_TRANSFER_SPEED   0.03125
+#define OCCUPANCY_FOR_TRANSFER  15
 
 enum class SatelliteType {
     KINO,
