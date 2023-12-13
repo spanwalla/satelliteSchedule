@@ -123,7 +123,7 @@ void Schedule::transformEventsToSlots() {
     for (int i = 1; i < events.size(); ++i) {   // замена events[i] на tmp, но вроде нужен оператор копирования тогда
         if (events[i] != events[i - 1]) {
             Slot slot(events[i - 1].timestamp, events[i].timestamp, &actions, this);
-            slot.makeOptimalChoice();
+            slot.makeAnotherOptimalChoice();
             notifyObservers(MessageType::SCHEDULE, slot.toString());
         }
         if (events[i].type == EventType::START) {

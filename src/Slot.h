@@ -19,6 +19,7 @@ class Slot {
 public:
     Slot(std::chrono::time_point<std::chrono::system_clock> start, std::chrono::time_point<std::chrono::system_clock> end, Actions* actions, Schedule* schedule);
     void makeOptimalChoice();
+    void makeAnotherOptimalChoice();
     std::string toString();
 
 private:
@@ -27,6 +28,7 @@ private:
     std::pair<std::chrono::time_point<std::chrono::system_clock>, std::chrono::time_point<std::chrono::system_clock>> interval;
     std::vector<int> not_selected_shootings;
     void choose_most_filled(Station* station);
+    void choose_satellite(Station* station);
 };
 
 
