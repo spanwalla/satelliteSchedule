@@ -35,7 +35,7 @@ void Slot::choose_satellite(Station* station) {
         auto transferring_index = std::find(transferring_satellites.begin(), transferring_satellites.end(), satellite);
         if (transferring_index == transferring_satellites.end()) {
             auto satellite_index = std::find(possible_actions->shooting.begin(), possible_actions->shooting.end(), satellite);
-            if (schedule->int_to_satellites.at(satellite).transfer_speed == KINO_TRANSFER_SPEED) {
+            if (schedule->int_to_satellites.at(satellite).getTransferSpeed() == KINO_TRANSFER_SPEED) {
                 if (satellite_index == possible_actions->shooting.end() && schedule->int_to_satellites.at(satellite).getFilledSpace() >= OCCUPANCY_FOR_TRANSFER) {
                     if (station->chosen_satellite == -1) {
                         station->chosen_satellite = satellite;

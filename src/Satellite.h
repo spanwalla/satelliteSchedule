@@ -26,12 +26,14 @@ public:
     void writeData(std::chrono::duration<double> t);
     [[nodiscard]] double getFreeSpace() const;
     [[nodiscard]] double getFilledSpace() const;
+    [[nodiscard]] double getTransferSpeed() const;
     double transferData(std::chrono::duration<double> t);
     friend std::ostream& operator << (std::ostream& os, const Satellite& satellite);
-    double transfer_speed;
+
 private:
     double disk_space; // в Гб
     double shooting_speed;
+    double transfer_speed;
     double filled_space;
 };
 

@@ -48,3 +48,7 @@ std::ostream& operator<<(std::ostream& os, const Satellite& satellite) {
         satellite.transfer_speed << " Gb/s, s_speed: " << satellite.shooting_speed << "Gb/s.";
     return os;
 }
+
+double Satellite::getTransferSpeed() const {
+    return transfer_speed;
+}

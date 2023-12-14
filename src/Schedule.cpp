@@ -27,7 +27,7 @@ void Schedule::parseDirectory(const std::string& path, std::vector<std::string>&
 }
 
 void Schedule::buildSchedule() {
-    std::stringstream ss;
+    std::ostringstream ss;
     ss << "[" << std::chrono::system_clock::now() << "] START BUILDING SCHEDULE.";
     notifyObservers(MessageType::INFO, ss.str());
     createEvents();
@@ -48,7 +48,7 @@ void Schedule::createEvents() {
     for (const auto& filename : files) {
         FileWrapper file(filename);
         std::pair<std::string, std::string> current;
-        std::stringstream ss;
+        std::ostringstream ss;
         ss << "[" << std::chrono::system_clock::now() << "] READING: " << filename;
         notifyObservers(MessageType::INFO, ss.str());
         while (!file.end()) {
@@ -62,7 +62,7 @@ void Schedule::createEvents() {
                 auto end = Converter::toTimePoint(match[2], "%d %b %Y %H:%M:%S."); // формат времени в config
                 if (current.first == "Russia") {
                     auto element = std::find(int_to_str_satellites.begin(), int_to_str_satellites.end(), current.second);
-                    int index = std::distance(int_to_str_satellites.begin(), element);
+                    auto index = int(std::distance(int_to_str_satellites.begin(), element));
                     if (element == int_to_str_satellites.end()) { // создать спутник, если он ещё не встречался прежде
                         int_to_str_satellites.push_back(current.second);
                         int_to_satellites.emplace_back(Converter::toSatelliteType(current.second));
@@ -73,14 +73,14 @@ void Schedule::createEvents() {
                 }
                 else {
                     auto element = std::find(int_to_str_stations.begin(), int_to_str_stations.end(), current.first);
-                    int index_station = std::distance(int_to_str_stations.begin(), element);
+                    auto index_station = int(std::distance(int_to_str_stations.begin(), element));
                     if (element == int_to_str_stations.end()) { // создать станцию, если она ещё не встречалась прежде
                         int_to_str_stations.push_back(current.first);
                         int_to_stations.emplace_back();
                     }
 
                     element = std::find(int_to_str_satellites.begin(), int_to_str_satellites.end(), current.second);
-                    int index_satellite = std::distance(int_to_str_satellites.begin(), element);
+                    auto index_satellite = int(std::distance(int_to_str_satellites.begin(), element));
                     if (element == int_to_str_satellites.end()) { // создать спутник, если он ещё не встречался прежде
                         int_to_str_satellites.push_back(current.second);
                         int_to_satellites.emplace_back(Converter::toSatelliteType(current.second));
@@ -93,7 +93,7 @@ void Schedule::createEvents() {
         }
     }
     std::sort(events.begin(), events.end());
-    std::stringstream ss;
+    std::ostringstream ss;
     ss << "[" << std::chrono::system_clock::now() << "] Total events: " << events.size();
     notifyObservers(MessageType::INFO, ss.str());
 }
@@ -107,7 +107,7 @@ void Schedule::resetSchedule() {
 }
 
 void Schedule::transformEventsToSlots() {
-    std::stringstream ss;
+    std::ostringstream ss;
     ss << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots started.";
     notifyObservers(MessageType::INFO, ss.str());
     Actions actions;
