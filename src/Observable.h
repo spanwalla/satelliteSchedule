@@ -13,7 +13,7 @@
 class Observable {
 public:
     virtual void addObserver(Observer* observer) = 0;
-    virtual void notifyObservers(MessageType type, std::string message) = 0;
+    virtual void notifyObservers(MessageType type, const std::string& message) = 0;
     virtual ~Observable() = default;
 };
 

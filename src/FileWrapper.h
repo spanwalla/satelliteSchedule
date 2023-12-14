@@ -9,7 +9,6 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include "Slot.h"
 
 class FileWrapper {
 public:

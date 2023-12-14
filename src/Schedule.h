@@ -26,13 +26,14 @@ public:
     void resetSchedule();
     [[nodiscard]] double getAllData() const;
     void addObserver(Observer* observer) override;
-    void notifyObservers(MessageType type, std::string message) override;
+    void notifyObservers(MessageType type, const std::string& message) override;
+    double all_received_data = 0;
+    std::vector<Satellite> int_to_satellites;
+    std::vector<Station> int_to_stations;
+    std::vector<std::string> int_to_str_satellites;
+    std::vector<std::string> int_to_str_stations;
 
 private:
-    friend class Slot;
-    double all_received_data = 0;
-    std::map<std::string, Satellite> satellites;
-    std::map<std::string, Station> stations;
     std::vector<Event> events;
     const std::string& working_directory;
     static std::vector<std::string> ignore;

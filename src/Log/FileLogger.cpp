@@ -9,6 +9,6 @@ FileLogger::FileLogger(LogObserver *observer, const std::string &path, const std
         observer->addLogger(type, this);
 }
 
-void FileLogger::write(std::string message) {
+void FileLogger::write(const std::string& message) {
     file.write(message);
 }

@@ -13,7 +13,7 @@
 class ConsoleLogger: public Logger {
 public:
     explicit ConsoleLogger(LogObserver* observer, const std::vector<MessageType> &subscribed);
-    void write(std::string message) override;
+    void write(const std::string& message) override;
 };
 
 

@@ -9,6 +9,6 @@ ConsoleLogger::ConsoleLogger(LogObserver *observer, const std::vector<MessageTyp
         observer->addLogger(type, this);
 }
 
-void ConsoleLogger::write(std::string message) {
+void ConsoleLogger::write(const std::string& message) {
     std::cout << message << std::endl;
 }

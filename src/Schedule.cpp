@@ -14,7 +14,7 @@ void Schedule::addObserver(Observer *observer) {
     observers.push_back(observer);
 }
 
-void Schedule::notifyObservers(MessageType type, std::string message) {
+void Schedule::notifyObservers(MessageType type, const std::string& message) {
     for (Observer* observer: observers)
         observer->update(type, message);
 }
@@ -27,7 +27,7 @@ void Schedule::parseDirectory(const std::string& path, std::vector<std::string>&
 }
 
 void Schedule::buildSchedule() {
-    std::stringstream ss;
+    std::ostringstream ss;
     ss << "[" << std::chrono::system_clock::now() << "] START BUILDING SCHEDULE.";
     notifyObservers(MessageType::INFO, ss.str());
     createEvents();
@@ -48,7 +48,7 @@ void Schedule::createEvents() {
     for (const auto& filename : files) {
         FileWrapper file(filename);
         std::pair<std::string, std::string> current;
-        std::stringstream ss;
+        std::ostringstream ss;
         ss << "[" << std::chrono::system_clock::now() << "] READING: " << filename;
         notifyObservers(MessageType::INFO, ss.str());
         while (!file.end()) {
@@ -61,55 +61,92 @@ void Schedule::createEvents() {
                 auto start = Converter::toTimePoint(match[1], "%d %b %Y %H:%M:%S.");
                 auto end = Converter::toTimePoint(match[2], "%d %b %Y %H:%M:%S."); // формат времени в config
                 if (current.first == "Russia") {
-                    if (!satellites.contains(current.second))
-                        satellites.emplace(current.second, Satellite(Converter::toSatelliteType(current.second)));
+                    auto element = std::find(int_to_str_satellites.begin(), int_to_str_satellites.end(), current.second);
+                    auto index = int(std::distance(int_to_str_satellites.begin(), element));
+                    if (element == int_to_str_satellites.end()) { // создать спутник, если он ещё не встречался прежде
+                        int_to_str_satellites.push_back(current.second);
+                        int_to_satellites.emplace_back(Converter::toSatelliteType(current.second));
+                    }
 
-                    events.emplace_back(EventType::START, start, current.second);
-                    events.emplace_back(EventType::END, end, current.second);
+                    events.emplace_back(EventType::START, start, index);
+                    events.emplace_back(EventType::END, end, index);
                 }
                 else {
-                    if (!stations.contains(current.first))
-                        stations.emplace(current.first, Station());
-                    if (!satellites.contains(current.second))
-                        satellites.emplace(current.second, Satellite(Converter::toSatelliteType(current.second)));
+                    auto element = std::find(int_to_str_stations.begin(), int_to_str_stations.end(), current.first);
+                    auto index_station = int(std::distance(int_to_str_stations.begin(), element));
+                    if (element == int_to_str_stations.end()) { // создать станцию, если она ещё не встречалась прежде
+                        int_to_str_stations.push_back(current.first);
+                        int_to_stations.emplace_back();
+                    }
 
-                    events.emplace_back(EventType::START, start, current.second, current.first);
-                    events.emplace_back(EventType::END, end, current.second, current.first);
+                    element = std::find(int_to_str_satellites.begin(), int_to_str_satellites.end(), current.second);
+                    auto index_satellite = int(std::distance(int_to_str_satellites.begin(), element));
+                    if (element == int_to_str_satellites.end()) { // создать спутник, если он ещё не встречался прежде
+                        int_to_str_satellites.push_back(current.second);
+                        int_to_satellites.emplace_back(Converter::toSatelliteType(current.second));
+                    }
+
+                    events.emplace_back(EventType::START, start, index_satellite, index_station);
+                    events.emplace_back(EventType::END, end, index_satellite, index_station);
                 }
             }
         }
     }
     std::sort(events.begin(), events.end());
-    std::stringstream ss;
+    std::ostringstream ss;
     ss << "[" << std::chrono::system_clock::now() << "] Total events: " << events.size();
     notifyObservers(MessageType::INFO, ss.str());
 }
 
 void Schedule::resetSchedule() {
-    stations.clear();
-    satellites.clear();
+    int_to_str_satellites.clear();
+    int_to_satellites.clear();
+    int_to_str_stations.clear();
+    int_to_stations.clear();
     events.clear();
 }
 
 void Schedule::transformEventsToSlots() {
-    std::stringstream ss;
+    std::ostringstream ss;
     ss << "[" << std::chrono::system_clock::now() << "] transformEventsToSlots started.";
     notifyObservers(MessageType::INFO, ss.str());
-    std::vector<std::pair<std::string, std::string>> actions;
+    Actions actions;
     if (events[0].type == EventType::START) {
-        actions.push_back(events[0].action);
+        if (events[0].action.second == -1) {
+            actions.shooting.push_back(events[0].action.first);
+        }
+        else {
+            int_to_stations.at(events[0].action.second).visible_satellites.push_back(events[0].action.first);
+            actions.transferring.push_back(events[0].action.second);
+        }
     } // выкидывать ошибку, если первое событие конец?
     for (int i = 1; i < events.size(); ++i) {   // замена events[i] на tmp, но вроде нужен оператор копирования тогда
         if (events[i] != events[i - 1]) {
-            Slot slot(events[i - 1].timestamp, events[i].timestamp, &actions);
-            slot.makeNotOptimalChoose(*this);
+            Slot slot(events[i - 1].timestamp, events[i].timestamp, &actions, this);
+            slot.makeAnotherOptimalChoice();
             notifyObservers(MessageType::SCHEDULE, slot.toString());
         }
         if (events[i].type == EventType::START) {
-            actions.push_back(events[i].action);
+            if (events[i].action.second == -1) {
+                actions.shooting.push_back(events[i].action.first);
+            }
+            else {
+                int_to_stations.at(events[i].action.second).visible_satellites.push_back(events[i].action.first);
+                if (std::find(actions.transferring.begin(), actions.transferring.end(), events[i].action.second) == actions.transferring.end()) {
+                    actions.transferring.push_back(events[i].action.second);
+                }
+            }
         }
         if (events[i].type == EventType::END) {
-            std::erase(actions, events[i].action);
+            if (events[i].action.second == -1) {
+                std::erase(actions.shooting, events[i].action.first);
+            }
+            else {
+                std::erase(int_to_stations.at(events[i].action.second).visible_satellites, events[i].action.first);
+                if (int_to_stations.at(events[i].action.second).visible_satellites.empty()) {
+                    std::erase(actions.transferring, events[i].action.second);
+                }
+            }
         }
     }
     ss.str(std::string());

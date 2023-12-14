@@ -9,7 +9,7 @@
 
 class Logger {
 public:
-    virtual void write(std::string message) = 0;
+    virtual void write(const std::string& message) = 0;
     virtual ~Logger() = default;
 };
 

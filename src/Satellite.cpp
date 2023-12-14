@@ -28,6 +28,10 @@ double Satellite::getFreeSpace() const {
     return disk_space - filled_space;
 }
 
+double Satellite::getFilledSpace() const {
+    return filled_space;
+}
+
 double Satellite::transferData(std::chrono::duration<double> t) {
     double to_transfer = t.count() * transfer_speed;
     if (filled_space - to_transfer < 0) {
@@ -43,4 +47,8 @@ std::ostream& operator<<(std::ostream& os, const Satellite& satellite) {
     os << "Disk: " << satellite.filled_space << '/' << satellite.disk_space << " Gb, t_speed: " <<
         satellite.transfer_speed << " Gb/s, s_speed: " << satellite.shooting_speed << "Gb/s.";
     return os;
+}
+
+double Satellite::getTransferSpeed() const {
+    return transfer_speed;
 }

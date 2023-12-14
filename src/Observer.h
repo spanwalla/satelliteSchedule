@@ -10,7 +10,7 @@
 
 class Observer {
 public:
-    virtual void update(MessageType type, std::string message) = 0;
+    virtual void update(MessageType type, const std::string& message) = 0;
     virtual ~Observer() = default;
 };
 

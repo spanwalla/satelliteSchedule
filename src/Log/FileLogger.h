@@ -13,7 +13,8 @@
 class FileLogger: public Logger {
 public:
     FileLogger(LogObserver* observer, const std::string& path, const std::vector<MessageType> &subscribed);
-    void write(std::string message) override;
+    void write(const std::string& message) override;
+
 private:
     FileWrapper file;
 };

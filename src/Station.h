@@ -6,14 +6,14 @@
 #define SATELLITESCHEDULE_STATION_H
 
 #include <iostream>
-#include "Satellite.h"
+#include <vector>
 
 class Station {
 public:
     friend std::ostream& operator << (std::ostream& os, const Station& station);
-    double receiveData(Satellite& satellite, std::chrono::duration<double> t);
-private:
-    double received = 0;
+    std::vector<int> visible_satellites;
+    std::vector<int> possible_satellites;
+    int chosen_satellite {-1};
 };
 
 
