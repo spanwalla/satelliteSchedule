@@ -32,6 +32,7 @@ public:
     std::vector<Station> int_to_stations;
     std::vector<std::string> int_to_str_satellites;
     std::vector<std::string> int_to_str_stations;
+
 private:
     std::vector<Event> events;
     const std::string& working_directory;
