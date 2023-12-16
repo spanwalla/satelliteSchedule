@@ -11,7 +11,7 @@ Slot::Slot(std::chrono::time_point<std::chrono::system_clock> start, std::chrono
         throw std::invalid_argument("End of slot is earlier than start.");
 }
 
-void Slot::chooseMostFilled(Station* station) {
+void Slot::choose_most_filled(Station* station) {
     double most_filled = 0;
     for (auto& satellite : station->visible_satellites) {
         // if (schedule->satellites.at(satellite).type == SatelliteType::KINO && (std::find(possible_actions->shooting.begin(), possible_actions->shooting.end(), satellite) == possible_actions->shooting.end()))
@@ -30,12 +30,12 @@ void Slot::chooseMostFilled(Station* station) {
     }
 }
 
-void Slot::chooseSatellite(Station* station) {
+void Slot::choose_satellite(Station* station) {
     for (auto& satellite : station->visible_satellites) {
         auto transferring_index = std::find(transferring_satellites.begin(), transferring_satellites.end(), satellite);
         if (transferring_index == transferring_satellites.end()) {
             auto satellite_index = std::find(possible_actions->shooting.begin(), possible_actions->shooting.end(), satellite);
-            if (schedule->int_to_satellites.at(satellite).getTransferSpeed() == KINO_TRANSFER_SPEED) {
+            if (schedule->int_to_satellites.at(satellite).transfer_speed == KINO_TRANSFER_SPEED) {
                 if (satellite_index == possible_actions->shooting.end() && schedule->int_to_satellites.at(satellite).getFilledSpace() >= OCCUPANCY_FOR_TRANSFER) {
                     if (station->chosen_satellite == -1) {
                         station->chosen_satellite = satellite;
@@ -55,8 +55,9 @@ void Slot::chooseSatellite(Station* station) {
     if (station->chosen_satellite == -1) {
         double most_filled = 0;
         for (auto sat : station->possible_satellites) {
+            auto transferring_index = std::find(transferring_satellites.begin(), transferring_satellites.end(), sat);
             double filled = schedule->int_to_satellites.at(sat).getFilledSpace();
-            if (filled > most_filled) {
+            if (filled > most_filled && transferring_index == transferring_satellites.end()) {
                 most_filled = filled;
                 station->chosen_satellite = sat;
             }
@@ -76,7 +77,7 @@ void Slot::chooseSatellite(Station* station) {
 
 void Slot::makeOptimalChoice() {
     for (auto& transferring_action : possible_actions->transferring) {
-        chooseMostFilled(&(schedule->int_to_stations.at(transferring_action)));
+        choose_most_filled(&(schedule->int_to_stations.at(transferring_action)));
     }
     for (int i = 0; i < possible_actions->shooting.size(); ++i) {
         if (std::find(not_selected_shootings.begin(), not_selected_shootings.end(), i) == not_selected_shootings.end()) {
@@ -88,7 +89,7 @@ void Slot::makeOptimalChoice() {
 void Slot::makeAnotherOptimalChoice() {
     for (auto& transferring_action : possible_actions->transferring) {
         schedule->int_to_stations.at(transferring_action).chosen_satellite = -1;
-        chooseSatellite(&(schedule->int_to_stations.at(transferring_action)));
+        choose_satellite(&(schedule->int_to_stations.at(transferring_action)));
     }
     for (int i = 0; i < possible_actions->shooting.size(); ++i) {
         if (std::find(not_selected_shootings.begin(), not_selected_shootings.end(), i) == not_selected_shootings.end()) {
