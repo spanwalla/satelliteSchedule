@@ -14,7 +14,6 @@ add_executable(satelliteSchedule main.cpp
         src/Event.cpp
         src/Event.h
         src/EventType.h
-        src/Station.cpp
         src/Station.h
         src/Schedule.cpp
         src/Schedule.h

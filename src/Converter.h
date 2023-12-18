@@ -13,7 +13,7 @@
 #include "SatelliteType.h"
 namespace Converter {
     SatelliteType toSatelliteType(const std::string& id);
-    std::chrono::time_point<std::chrono::system_clock> toTimePoint(const std::string& timestamp, const std::string& fmt);
+    std::chrono::time_point<std::chrono::system_clock> toTimePoint(const std::string& timestamp, const std::string& fmt, bool millis = true);
 }
 
 #endif //SATELLITESCHEDULE_CONVERTER_H

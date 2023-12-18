@@ -163,3 +163,8 @@ void Schedule::transformEventsToSlots() {
 double Schedule::getAllData() const {
     return all_received_data;
 }
+
+void Schedule::addData(double new_data) {
+    if (new_data > 0)
+        all_received_data += new_data;
+}
