@@ -42,3 +42,7 @@ double Satellite::transferData(std::chrono::duration<double> t) {
 double Satellite::getTransferSpeed() const {
     return transfer_speed;
 }
+
+bool Satellite::hasFreeSpace() const {
+    return filled_space < disk_space;
+}
