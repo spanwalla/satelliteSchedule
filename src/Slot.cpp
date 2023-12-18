@@ -93,7 +93,10 @@ void Slot::makeAnotherOptimalChoice() {
     }
     for (int i = 0; i < possible_actions->shooting.size(); ++i) {
         if (std::find(not_selected_shootings.begin(), not_selected_shootings.end(), i) == not_selected_shootings.end()) {
-            schedule->int_to_satellites.at(possible_actions->shooting[i]).writeData(interval.second - interval.first);
+            if (schedule->int_to_satellites.at(possible_actions->shooting[i]).hasFreeSpace())
+                schedule->int_to_satellites.at(possible_actions->shooting[i]).writeData(interval.second - interval.first);
+            else
+                not_selected_shootings.push_back(i);
         }
     }
 }

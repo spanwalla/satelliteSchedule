@@ -26,6 +26,7 @@ public:
     void writeData(std::chrono::duration<double> t);
     double transferData(std::chrono::duration<double> t);
     [[nodiscard]] double getFilledSpace() const;
+    [[nodiscard]] bool hasFreeSpace() const;
     [[nodiscard]] double getTransferSpeed() const;
 
 private:
