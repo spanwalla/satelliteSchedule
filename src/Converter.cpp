@@ -13,11 +13,14 @@ SatelliteType Converter::toSatelliteType(const std::string& satellite) {
     throw std::invalid_argument("Invalid satellite id.");
 }
 
-std::chrono::time_point<std::chrono::system_clock> Converter::toTimePoint(const std::string& timestamp, const std::string& fmt) {
+std::chrono::time_point<std::chrono::system_clock> Converter::toTimePoint(const std::string& timestamp, const std::string& fmt, bool millis) {
     std::tm tm = {};
     std::istringstream ss(timestamp);
-    std::string ms;
-    ss >> std::get_time(&tm, fmt.c_str()) >> ms;
+    std::string ms = "0";
+    ss >> std::get_time(&tm, fmt.c_str());
+    if (millis)
+        ss >> ms;
+
     auto timePoint =
         std::chrono::system_clock::from_time_t(std::mktime(&tm)) +
         std::chrono::milliseconds(std::stoi(ms));

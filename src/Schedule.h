@@ -25,9 +25,9 @@ public:
     void buildSchedule();
     void resetSchedule();
     [[nodiscard]] double getAllData() const;
+    void addData(double new_data);
     void addObserver(Observer* observer) override;
     void notifyObservers(MessageType type, const std::string& message) override;
-    double all_received_data = 0;
     std::vector<Satellite> int_to_satellites;
     std::vector<Station> int_to_stations;
     std::vector<std::string> int_to_str_satellites;
@@ -38,6 +38,7 @@ private:
     const std::string& working_directory;
     static std::vector<std::string> ignore;
     std::vector<Observer*> observers;
+    double all_received_data = 0;
 
     static void parseDirectory(const std::string& path, std::vector<std::string>& file_paths);
     void createEvents();

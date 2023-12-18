@@ -22,7 +22,7 @@ void Slot::chooseMostFilled(Station* station) {
         }
     }
     if (station->chosen_satellite != -1) {
-        schedule->all_received_data += schedule->int_to_satellites.at(station->chosen_satellite).transferData(interval.second - interval.first);
+        schedule->addData(schedule->int_to_satellites.at(station->chosen_satellite).transferData(interval.second - interval.first));
     }
     auto index = std::find(possible_actions->shooting.begin(), possible_actions->shooting.end(), station->chosen_satellite);
     if (index != possible_actions->shooting.end()) {
@@ -69,10 +69,10 @@ void Slot::chooseSatellite(Station* station) {
         }
     }
     if (station->chosen_satellite != -1) {
-        schedule->all_received_data += schedule->int_to_satellites.at(station->chosen_satellite).transferData(interval.second - interval.first);
+        schedule->addData(schedule->int_to_satellites.at(station->chosen_satellite).transferData(interval.second - interval.first));
         transferring_satellites.push_back(station->chosen_satellite);
     }
-    //station->chosen_satellite = -1;
+    // station->chosen_satellite = -1;
 }
 
 void Slot::makeOptimalChoice() {
