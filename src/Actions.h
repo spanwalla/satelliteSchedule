@@ -5,7 +5,7 @@
 
 struct Actions {
 	std::vector<int> shooting;
-	std::vector<int> transferring;
+	std::vector<int> transmitting;
 };
 
 #endif

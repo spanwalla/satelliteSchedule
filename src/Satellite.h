@@ -24,15 +24,15 @@ class Satellite {
 public:
     explicit Satellite(SatelliteType type);
     void writeData(std::chrono::duration<double> t);
-    double transferData(std::chrono::duration<double> t);
+    double transmitData(std::chrono::duration<double> t);
     [[nodiscard]] double getFilledSpace() const;
     [[nodiscard]] bool hasFreeSpace() const;
-    [[nodiscard]] double getTransferSpeed() const;
+    [[nodiscard]] double getTransmitterSpeed() const;
 
 private:
     double disk_space; // в Гб
     double shooting_speed;
-    double transfer_speed;
+    double transmit_speed;
     double filled_space;
 };
 

@@ -22,7 +22,8 @@ void Slot::chooseMostFilled(Station* station) {
         }
     }
     if (station->chosen_satellite != -1) {
-        schedule->addData(schedule->int_to_satellites.at(station->chosen_satellite).transferData(interval.second - interval.first));
+        schedule->addData(
+                schedule->int_to_satellites.at(station->chosen_satellite).transmitData(interval.second - interval.first));
     }
     auto index = std::find(possible_actions->shooting.begin(), possible_actions->shooting.end(), station->chosen_satellite);
     if (index != possible_actions->shooting.end()) {
@@ -32,11 +33,11 @@ void Slot::chooseMostFilled(Station* station) {
 
 void Slot::chooseSatellite(Station* station) {
     for (auto& satellite : station->visible_satellites) {
-        auto transferring_index = std::find(transferring_satellites.begin(), transferring_satellites.end(), satellite);
-        if (transferring_index == transferring_satellites.end()) {
+        auto transmitting_index = std::find(transmitting_satellites.begin(), transmitting_satellites.end(), satellite);
+        if (transmitting_index == transmitting_satellites.end()) {
             auto satellite_index = std::find(possible_actions->shooting.begin(), possible_actions->shooting.end(), satellite);
-            if (schedule->int_to_satellites.at(satellite).getTransferSpeed() == KINO_TRANSFER_SPEED) {
-                if (satellite_index == possible_actions->shooting.end() && schedule->int_to_satellites.at(satellite).getFilledSpace() >= OCCUPANCY_FOR_TRANSFER) {
+            if (schedule->int_to_satellites.at(satellite).getTransmitterSpeed() == KINO_TRANSMITTER_SPEED) {
+                if (satellite_index == possible_actions->shooting.end() && schedule->int_to_satellites.at(satellite).getFilledSpace() >= OCCUPANCY_FOR_TRANSMITTING) {
                     if (station->chosen_satellite == -1) {
                         station->chosen_satellite = satellite;
                     }
@@ -55,9 +56,9 @@ void Slot::chooseSatellite(Station* station) {
     if (station->chosen_satellite == -1) {
         double most_filled = 0;
         for (auto sat : station->possible_satellites) {
-            auto transferring_index = std::find(transferring_satellites.begin(), transferring_satellites.end(), sat);
+            auto transmitter_index = std::find(transmitting_satellites.begin(), transmitting_satellites.end(), sat);
             double filled = schedule->int_to_satellites.at(sat).getFilledSpace();
-            if (filled > most_filled && transferring_index == transferring_satellites.end()) {
+            if (filled > most_filled && transmitter_index == transmitting_satellites.end()) {
                 most_filled = filled;
                 station->chosen_satellite = sat;
             }
@@ -69,15 +70,16 @@ void Slot::chooseSatellite(Station* station) {
         }
     }
     if (station->chosen_satellite != -1) {
-        schedule->addData(schedule->int_to_satellites.at(station->chosen_satellite).transferData(interval.second - interval.first));
-        transferring_satellites.push_back(station->chosen_satellite);
+        schedule->addData(
+                schedule->int_to_satellites.at(station->chosen_satellite).transmitData(interval.second - interval.first));
+        transmitting_satellites.push_back(station->chosen_satellite);
     }
     // station->chosen_satellite = -1;
 }
 
 void Slot::makeOptimalChoice() {
-    for (auto& transferring_action : possible_actions->transferring) {
-        chooseMostFilled(&(schedule->int_to_stations.at(transferring_action)));
+    for (auto& transmitting_action : possible_actions->transmitting) {
+        chooseMostFilled(&(schedule->int_to_stations.at(transmitting_action)));
     }
     for (int i = 0; i < possible_actions->shooting.size(); ++i) {
         if (std::find(not_selected_shootings.begin(), not_selected_shootings.end(), i) == not_selected_shootings.end()) {
@@ -87,9 +89,9 @@ void Slot::makeOptimalChoice() {
 }
 
 void Slot::makeAnotherOptimalChoice() {
-    for (auto& transferring_action : possible_actions->transferring) {
-        schedule->int_to_stations.at(transferring_action).chosen_satellite = -1;
-        chooseSatellite(&(schedule->int_to_stations.at(transferring_action)));
+    for (auto& transmitting_action : possible_actions->transmitting) {
+        schedule->int_to_stations.at(transmitting_action).chosen_satellite = -1;
+        chooseSatellite(&(schedule->int_to_stations.at(transmitting_action)));
     }
     for (int i = 0; i < possible_actions->shooting.size(); ++i) {
         if (std::find(not_selected_shootings.begin(), not_selected_shootings.end(), i) == not_selected_shootings.end()) {
@@ -109,10 +111,10 @@ std::string Slot::toString() {
             oss << "Satellite-KinoSat_" << schedule->int_to_str_satellites.at(possible_actions->shooting[i]) << "\n";
         }
     }
-    oss << "\nTransferring:\n";
-    for (auto& transferring_action : possible_actions->transferring) {
-        if (schedule->int_to_stations.at(transferring_action).chosen_satellite != -1) {
-            oss << schedule->int_to_str_stations.at(transferring_action) << ":Satellite-KinoSat_" << schedule->int_to_str_satellites.at(schedule->int_to_stations.at(transferring_action).chosen_satellite) << "\n";
+    oss << "\nTransmitting:\n";
+    for (auto& transmitting_action : possible_actions->transmitting) {
+        if (schedule->int_to_stations.at(transmitting_action).chosen_satellite != -1) {
+            oss << schedule->int_to_str_stations.at(transmitting_action) << ":Satellite-KinoSat_" << schedule->int_to_str_satellites.at(schedule->int_to_stations.at(transmitting_action).chosen_satellite) << "\n";
         }
     }
     return oss.str();
