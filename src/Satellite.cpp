@@ -8,12 +8,12 @@ Satellite::Satellite(SatelliteType type) : shooting_speed(SHOOTING_SPEED), fille
     switch (type) {
     case SatelliteType::KINO:
         disk_space = KINO_SPACE;
-        transfer_speed = KINO_TRANSFER_SPEED;
+            transmit_speed = KINO_TRANSMITTER_SPEED;
         break;
 
     case SatelliteType::ZORKIY:
         disk_space = ZORKIY_SPACE;
-        transfer_speed = ZORKIY_TRANSFER_SPEED;
+            transmit_speed = ZORKIY_TRANSMITTER_SPEED;
         break;
     }
 }
@@ -28,19 +28,19 @@ double Satellite::getFilledSpace() const {
     return filled_space;
 }
 
-double Satellite::transferData(std::chrono::duration<double> t) {
-    double to_transfer = t.count() * transfer_speed;
-    if (filled_space - to_transfer < 0) {
-        to_transfer = filled_space;
+double Satellite::transmitData(std::chrono::duration<double> t) {
+    double to_transmitting = t.count() * transmit_speed;
+    if (filled_space - to_transmitting < 0) {
+        to_transmitting = filled_space;
         filled_space = 0;
     }
     else
-        filled_space -= to_transfer;
-    return to_transfer;
+        filled_space -= to_transmitting;
+    return to_transmitting;
 }
 
-double Satellite::getTransferSpeed() const {
-    return transfer_speed;
+double Satellite::getTransmitterSpeed() const {
+    return transmit_speed;
 }
 
 bool Satellite::hasFreeSpace() const {

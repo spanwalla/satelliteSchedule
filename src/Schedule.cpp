@@ -117,7 +117,7 @@ void Schedule::transformEventsToSlots() {
         }
         else {
             int_to_stations.at(events[0].action.second).visible_satellites.push_back(events[0].action.first);
-            actions.transferring.push_back(events[0].action.second);
+            actions.transmitting.push_back(events[0].action.second);
         }
     } // выкидывать ошибку, если первое событие конец?
     for (int i = 1; i < events.size(); ++i) {   // замена events[i] на tmp, но вроде нужен оператор копирования тогда
@@ -132,8 +132,8 @@ void Schedule::transformEventsToSlots() {
             }
             else {
                 int_to_stations.at(events[i].action.second).visible_satellites.push_back(events[i].action.first);
-                if (std::find(actions.transferring.begin(), actions.transferring.end(), events[i].action.second) == actions.transferring.end()) {
-                    actions.transferring.push_back(events[i].action.second);
+                if (std::find(actions.transmitting.begin(), actions.transmitting.end(), events[i].action.second) == actions.transmitting.end()) {
+                    actions.transmitting.push_back(events[i].action.second);
                 }
             }
         }
@@ -144,7 +144,7 @@ void Schedule::transformEventsToSlots() {
             else {
                 std::erase(int_to_stations.at(events[i].action.second).visible_satellites, events[i].action.first);
                 if (int_to_stations.at(events[i].action.second).visible_satellites.empty()) {
-                    std::erase(actions.transferring, events[i].action.second);
+                    std::erase(actions.transmitting, events[i].action.second);
                 }
             }
         }
