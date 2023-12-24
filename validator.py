@@ -11,11 +11,11 @@ def detect_satellite(index: int) -> tuple:
         raise KeyError(f"Wrong satellite index: {index}.")
 
 
-def to_transfer(current_memory: int, interval: tuple, transfer_speed: int) -> int:
-    can_transfer = transfer_speed * (interval[1] - interval[0]).total_seconds()
-    if current_memory < can_transfer:
-        can_transfer = current_memory
-    return can_transfer
+def to_transmit(current_memory: int, interval: tuple, transmitter_speed: int) -> int:
+    can_transmit = transmitter_speed * (interval[1] - interval[0]).total_seconds()
+    if current_memory < can_transmit:
+        can_transmit = current_memory
+    return can_transmit
 
 
 def to_shoot(current_memory: int, space: int, interval: tuple, shooting_speed: int) -> int:
@@ -52,7 +52,7 @@ def validator(path: str):
 
                     satellite_parameters = detect_satellite(int(transfer[1]))
 
-                    mem = to_transfer(satellites[transfer[1]], current_interval, satellite_parameters[2])
+                    mem = to_transmit(satellites[transfer[1]], current_interval, satellite_parameters[2])
                     satellites[transfer[1]] -= mem
                     stations[transfer[0]] += mem
                     transferred.append(transfer[0])
@@ -76,7 +76,7 @@ def validator(path: str):
             if j is not None:
                 shooting_satellites.append(j[1])
             else:
-                j = re.match(r"^(.+):Satellite-KinoSat_(\d{6})$", line) # transferring
+                j = re.match(r"^(.+):Satellite-KinoSat_(\d{6})$", line) # transmitting
                 if j is not None:
                     transfers.append([j[1], j[2]])
         current_str += 1
