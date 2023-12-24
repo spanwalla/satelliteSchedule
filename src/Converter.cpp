@@ -15,8 +15,14 @@ SatelliteType Converter::toSatelliteType(const std::string& satellite) {
 
 std::chrono::time_point<std::chrono::system_clock> Converter::toTimePoint(const std::string& timestamp, const std::string& fmt, bool millis) {
     std::tm tm = {};
-    std::istringstream ss(timestamp);
+    std::stringstream ss;
     std::string ms = "0";
+
+#ifndef _WIN32
+    if (timestamp[1] == ' ') // сомнительно, но okaaay
+        ss << '0';
+#endif
+    ss << timestamp;
     ss >> std::get_time(&tm, fmt.c_str());
     if (millis)
         ss >> ms;
@@ -24,5 +30,8 @@ std::chrono::time_point<std::chrono::system_clock> Converter::toTimePoint(const 
     auto timePoint =
         std::chrono::system_clock::from_time_t(std::mktime(&tm)) +
         std::chrono::milliseconds(std::stoi(ms));
-    return timePoint + std::chrono::seconds(-_timezone);
+#ifdef _WIN32
+    timePoint += std::chrono::seconds(-_timezone);
+#endif
+    return timePoint;
 }
