@@ -31,7 +31,8 @@ private:
     std::vector<int> not_selected_shootings;
     std::vector<int> transmitting_satellites;
     void chooseMostFilled(Station* station);
-    void chooseSatellite(Station* station);
+    void chooseSatellite(Station* station, int station_ind);
+    bool visibleByOther(int start, int satellite);
 };
 
 #ifndef _WIN32

@@ -31,18 +31,28 @@ void Slot::chooseMostFilled(Station* station) {
     }
 }
 
-void Slot::chooseSatellite(Station* station) {
+bool Slot::visibleByOther(int start, int satellite){
+    for (int i = start + 1; i < possible_actions->transmitting.size(); ++i) {
+        auto index = std::find(schedule->int_to_stations.at(possible_actions->transmitting[i]).visible_satellites.begin(), schedule->int_to_stations.at(possible_actions->transmitting[i]).visible_satellites.end(), satellite);
+        if (index != schedule->int_to_stations.at(possible_actions->transmitting[i]).visible_satellites.end()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Slot::chooseSatellite(Station* station, int station_ind) {
     for (auto& satellite : station->visible_satellites) {
         auto transmitting_index = std::find(transmitting_satellites.begin(), transmitting_satellites.end(), satellite);
         if (transmitting_index == transmitting_satellites.end()) {
             auto satellite_index = std::find(possible_actions->shooting.begin(), possible_actions->shooting.end(), satellite);
             if (schedule->int_to_satellites.at(satellite).getTransmitterSpeed() == KINO_TRANSMITTER_SPEED) {
-                if (satellite_index == possible_actions->shooting.end() && schedule->int_to_satellites.at(satellite).getFilledSpace() >= OCCUPANCY_FOR_TRANSMITTING) {
+                if (satellite_index == possible_actions->shooting.end() && (schedule->int_to_satellites.at(satellite).getFilledSpace() >= OCCUPANCY_FOR_TRANSMITTING) && !visibleByOther(station_ind, satellite)) {
                     if (station->chosen_satellite == -1) {
                         station->chosen_satellite = satellite;
                     }
                     else {
-                        if (schedule->int_to_satellites.at(satellite).getFilledSpace() > schedule->int_to_satellites.at(station->chosen_satellite).getFilledSpace()) {
+                        if ((schedule->int_to_satellites.at(satellite).getFilledSpace() > schedule->int_to_satellites.at(station->chosen_satellite).getFilledSpace()) && !visibleByOther(station_ind, satellite)) {
                             station->chosen_satellite = satellite;
                         }
                     }
@@ -89,9 +99,11 @@ void Slot::makeOptimalChoice() {
 }
 
 void Slot::makeAnotherOptimalChoice() {
+    int station_ind = 0;
     for (auto& transmitting_action : possible_actions->transmitting) {
         schedule->int_to_stations.at(transmitting_action).chosen_satellite = -1;
-        chooseSatellite(&(schedule->int_to_stations.at(transmitting_action)));
+        chooseSatellite(&(schedule->int_to_stations.at(transmitting_action)), station_ind);
+        station_ind += 1;
     }
     for (int i = 0; i < possible_actions->shooting.size(); ++i) {
         if (std::find(not_selected_shootings.begin(), not_selected_shootings.end(), i) == not_selected_shootings.end()) {
